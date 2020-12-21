@@ -29,7 +29,7 @@ export default class MazeControl extends Component {
         if (grid_with_numbers[y][x] === 0) {
           elements.push(<div className="cell open"></div>);
         }
-        if (grid_with_numbers[y][x] === -1) {
+        if (grid_with_numbers[y][x] === "n") {
           elements.push(<div className="cell closed"></div>);
         }
       }
@@ -47,7 +47,7 @@ export default class MazeControl extends Component {
         grid_cells[y] = grid_cells[y] || [];
         if (y === 0) {
           //Initialize top border
-          grid_cells[y][x] = -1;
+          grid_cells[y][x] = "n";
         } else {
           grid_cells[y][x] = 0;
         }
@@ -58,8 +58,8 @@ export default class MazeControl extends Component {
     let y_grid = 0;
 
     for (var y = 0; y < MazeManager.grid.length; y++) {
-      grid_cells[2 * y][0] = -1;
-      grid_cells[2 * y + 1][0] = -1;
+      grid_cells[2 * y][0] = "n";
+      grid_cells[2 * y + 1][0] = "n";
 
       for (var x = 0; x < MazeManager.grid[0].length; x++) {
         //grid indexes
@@ -75,11 +75,11 @@ export default class MazeControl extends Component {
           grid_cells[y_grid + 1][x_grid] = 0;
         } else {
           // Close a passage to the south.
-          grid_cells[y_grid + 1][x_grid] = -1;
+          grid_cells[y_grid + 1][x_grid] = "n";
         }
 
         // Add closed passage to next row between rooms.
-        grid_cells[y_grid + 1][x_grid + 1] = -1;
+        grid_cells[y_grid + 1][x_grid + 1] = "n";
 
         if (
           (MazeManager.grid[y][x] & MazeManager.DIRECTION.RIGHT) ===
@@ -89,11 +89,13 @@ export default class MazeControl extends Component {
           grid_cells[y_grid][x_grid + 1] = 0;
         } else {
           // Close a passage to the east.
-          grid_cells[y_grid][x_grid + 1] = -1;
+          grid_cells[y_grid][x_grid + 1] = "n";
         }
       }
     }
-    grid_cells[MazeManager.grid.length * 2][0] = -1;
+    grid_cells[MazeManager.grid.length * 2][0] = "n";
+    console.log("grid_cells");
+    console.log(grid_cells);
     return grid_cells;
   }
 
