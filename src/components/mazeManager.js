@@ -18,8 +18,6 @@ export var MazeManager = {
         MazeManager.grid[y][x] = 0;
       }
     }
-    console.log("maze control initialize grid!!");
-    console.log(MazeManager.grid);
     MazeManager.carve(0, 0);
   },
 
@@ -88,39 +86,5 @@ export var MazeManager = {
         MazeManager.path(x, y, x - 1, y, MazeManager.DIRECTION.LEFT);
       }
     });
-  },
-
-  toString: function () {
-    var result = "";
-
-    // Top border.
-    for (var i = 0; i < MazeManager.grid[0].length * 2; i++) {
-      result += "_";
-    }
-
-    result += "\n";
-
-    // Main content.
-    for (var y = 0; y < MazeManager.grid.length; y++) {
-      result += "|";
-
-      for (var x = 0; x < MazeManager.grid[0].length; x++) {
-        // We only need to check south and east (because north and west have borders already included).
-        result +=
-          (MazeManager.grid[y][x] & MazeManager.DIRECTION.BOTTOM) ===
-          MazeManager.DIRECTION.BOTTOM
-            ? " "
-            : "_";
-        result +=
-          (MazeManager.grid[y][x] & MazeManager.DIRECTION.RIGHT) ===
-          MazeManager.DIRECTION.RIGHT
-            ? " "
-            : "|";
-      }
-
-      result += "\n";
-    }
-
-    return result;
-  },
+  }
 };
