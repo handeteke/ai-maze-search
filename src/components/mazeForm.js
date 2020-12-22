@@ -347,7 +347,7 @@ class MazeForm extends Component {
               </Form.Control.Feedback>
             </Form.Group>
           </Form.Row>
-          <Form.Row style={{ margin: "2em" }}>
+          <Form.Row style={{ marginLeft: "2em" }}>
             <Form.Group as={Col}>
               <Form.Label>
                 <div style={{ display: "flex", flexDirection: "row" }}>
@@ -435,7 +435,7 @@ class MazeForm extends Component {
             variant="primary"
             type="submit"
             disabled={isFormValid}
-            style={{ margin: "2em" }}
+            style={{ marginLeft: "2em" }}
           >
             Create Maze
           </Button>

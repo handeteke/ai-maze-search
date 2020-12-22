@@ -46,6 +46,7 @@ export var MazeCreator = {
     console.log("GRID:");
     console.log(MazeCreator.grid);
   },
+
   insertStart: function () {
     let index =
       MazeCreator.FORM.WIDTH * MazeCreator.FORM.START_Y +

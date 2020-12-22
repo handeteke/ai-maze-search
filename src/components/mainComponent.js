@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import MazeForm from "./mazeForm";
 import MazeControl from "./mazeControl";
+import MazeSearch from "./mazeSearch";
 
 class MainComponent extends Component {
   constructor(props) {
@@ -8,7 +9,7 @@ class MainComponent extends Component {
     this.state = {
       isFormValid: false,
       form: {},
-      grid: []
+      grid: [],
     };
   }
 
@@ -17,17 +18,19 @@ class MainComponent extends Component {
   };
 
   getGrid = (g) => {
-    console.log("main component grid");
-    console.log(g);
     this.setState({ grid: g });
-  }
- 
+  };
+
   setForm = (formData) => {
     this.setState({ form: formData });
   };
 
+  canSearch = () => {
+    return this.state.grid.length !== 0;
+  };;
+
   render() {
-    const { isFormValid, form } = this.state;
+    const { isFormValid, form, grid } = this.state;
     return (
       <div
         style={{
@@ -65,11 +68,8 @@ class MainComponent extends Component {
         <div>
           <MazeForm isFormValid={this.isFormValid} formData={this.setForm} />
         </div>
-        {
-          isFormValid && (
-            <MazeControl form={form} grid={this.props.grid} />
-          )
-        }
+        {isFormValid && <MazeControl form={form} grid={this.getGrid} />}
+        {this.canSearch() && <MazeSearch grid={grid} />}
       </div>
     );
   }

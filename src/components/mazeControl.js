@@ -10,7 +10,7 @@ export default class MazeControl extends Component {
 
     MazeCreator.initialize(this.props.form);
 
-    this.props["grid"](MazeCreator.grid);
+    this.props.grid(MazeCreator.grid);
 
     this.state = {
       grid: this.getGridUI(),
@@ -83,20 +83,10 @@ export default class MazeControl extends Component {
     }
     return elements;
   }
-
-  redraw = (event) => {
-    MazeCreator.initialize(this.props.form);
-    this.grid();
-  };
-
+  
   isMazeCreated = () => {
     return MazeCreator.IS_SUCCESSFULL;
   };
-
-  componentWillReceiveProps() {
-    // Update maze when property changes.
-    this.redraw();
-  }
 
   render() {
     return (
