@@ -24,7 +24,6 @@ export default class MazeControl extends Component {
   }
 
   getGridUI() {
-    const { width } = this.props.form;
     let grid = MazeCreator.grid;
     var elements = [];
     let key = 0;

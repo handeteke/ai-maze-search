@@ -180,7 +180,6 @@ class MazeForm extends Component {
                 disabled={isFormValid}
               />
               <Form.Control.Feedback type="invalid">
-                Maze width must be between 2 and 40
               </Form.Control.Feedback>
             </Form.Group>
             <Form.Group as={Col}>
@@ -210,7 +209,6 @@ class MazeForm extends Component {
                 disabled={isFormValid}
               />
               <Form.Control.Feedback type="invalid">
-                Maze height must be between 2 and 40
               </Form.Control.Feedback>
             </Form.Group>
           </Form.Row>
@@ -279,6 +277,7 @@ class MazeForm extends Component {
                   >
                     <GiBrickWall />
                   </div>
+                  <div>
                   <div
                     style={{
                       color: "grey",
@@ -286,7 +285,11 @@ class MazeForm extends Component {
                       fontWeight: "bold",
                     }}
                   >
-                    Please Enter Wall Count
+                    Please Enter Wall Count{" "}
+                    </div>
+                    <div style={{ color: "grey", fontSize: "0.75em" }}>
+                    (Wall count must be between 2 and 40)
+                  </div>
                   </div>
                 </div>
               </Form.Label>
@@ -302,7 +305,6 @@ class MazeForm extends Component {
                 disabled={isFormValid}
               />
               <Form.Control.Feedback type="invalid">
-                Wall count cannot be more than cell count
               </Form.Control.Feedback>
             </Form.Group>
             <Form.Group as={Col}>
@@ -320,6 +322,7 @@ class MazeForm extends Component {
                   >
                     <FaCat />
                   </div>
+                  <div>
                   <div
                     style={{
                       color: "grey",
@@ -327,8 +330,12 @@ class MazeForm extends Component {
                       fontWeight: "bold",
                     }}
                   >
-                    Please Enter Cat Count
+                    Please Enter Cat Count{" "}
+                    </div>
+                    <div style={{ color: "grey", fontSize: "0.75em" }}>
+                    (Cat count must be between 2 and 40)
                   </div>
+                </div>
                 </div>
               </Form.Label>
               <Form.Control
@@ -343,7 +350,6 @@ class MazeForm extends Component {
                 disabled={isFormValid}
               />
               <Form.Control.Feedback type="invalid">
-                Cat count cannot be more than cell count
               </Form.Control.Feedback>
             </Form.Group>
           </Form.Row>
@@ -363,6 +369,7 @@ class MazeForm extends Component {
                   >
                     <FaDog />
                   </div>
+                  <div>
                   <div
                     style={{
                       color: "grey",
@@ -370,8 +377,12 @@ class MazeForm extends Component {
                       fontWeight: "bold",
                     }}
                   >
-                    Please Enter Dog Count
+                    Please Enter Dog Count{" "}
+                    </div>
+                    <div style={{ color: "grey", fontSize: "0.75em" }}>
+                    (Dog count must be between 2 and 40)
                   </div>
+                </div>
                 </div>
               </Form.Label>
               <Form.Control
@@ -386,7 +397,6 @@ class MazeForm extends Component {
                 disabled={isFormValid}
               />
               <Form.Control.Feedback type="invalid">
-                Dog count cannot be more than cell count
               </Form.Control.Feedback>
             </Form.Group>
             <Form.Group as={Col}>
@@ -404,6 +414,7 @@ class MazeForm extends Component {
                   >
                     <FaKiwiBird />
                   </div>
+                  <div>
                   <div
                     style={{
                       color: "grey",
@@ -411,8 +422,12 @@ class MazeForm extends Component {
                       fontWeight: "bold",
                     }}
                   >
-                    Please Enter Bird Count
+                    Please Enter Bird Count{" "}
+                    </div>
+                    <div style={{ color: "grey", fontSize: "0.75em" }}>
+                    (Bird count must be between 2 and 40)
                   </div>
+                </div>
                 </div>
               </Form.Label>
               <Form.Control
@@ -427,7 +442,6 @@ class MazeForm extends Component {
                 disabled={isFormValid}
               />
               <Form.Control.Feedback type="invalid">
-                Bird count cannot be more than cell count
               </Form.Control.Feedback>
             </Form.Group>
           </Form.Row>

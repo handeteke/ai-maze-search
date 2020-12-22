@@ -7,7 +7,7 @@ export default class MazeSearch extends Component {
     super(props);
 
     this.state = {
-      searchOptions: ["A*", "DFS", "BFS"],
+      searchOptions: ["Recursive Search", "DFS", "BFS", "A*"],
       selectedSearct: "",
       grid: this.setGridValues(),
     };
