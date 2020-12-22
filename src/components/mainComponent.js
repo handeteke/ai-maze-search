@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import MazeForm from "./mazeForm";
-import CreateMaze from "./createMaze";
+import MazeControl from "./mazeControl";
 
 class MainComponent extends Component {
   constructor(props) {
@@ -8,6 +8,7 @@ class MainComponent extends Component {
     this.state = {
       isFormValid: false,
       form: {},
+      grid: []
     };
   }
 
@@ -15,6 +16,12 @@ class MainComponent extends Component {
     this.setState({ isFormValid: v });
   };
 
+  getGrid = (g) => {
+    console.log("main component grid");
+    console.log(g);
+    this.setState({ grid: g });
+  }
+ 
   setForm = (formData) => {
     this.setState({ form: formData });
   };
@@ -60,7 +67,7 @@ class MainComponent extends Component {
         </div>
         {
           isFormValid && (
-            <CreateMaze form={form}/>
+            <MazeControl form={form} grid={this.props.grid} />
           )
         }
       </div>

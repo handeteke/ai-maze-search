@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Form, Button, Col } from "react-bootstrap";
+import { GiBrickWall } from "react-icons/gi";
+import { FaCat, FaDog, FaKiwiBird } from "react-icons/fa";
 
 class MazeForm extends Component {
   constructor(props) {
@@ -10,6 +12,10 @@ class MazeForm extends Component {
         height: 0,
         startX: 0,
         startY: 0,
+        wallCount: 0,
+        catCount: 0,
+        dogCount: 0,
+        birdCount: 0,
       },
       isFormValid: false,
     };
@@ -59,6 +65,47 @@ class MazeForm extends Component {
     event.preventDefault();
   };
 
+  handleWallCountChange = (event) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      form: {
+        ...prevState.form,
+        wallCount: parseInt(event.target.value),
+      },
+    }));
+    event.preventDefault();
+  };
+  handleCatCountChange = (event) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      form: {
+        ...prevState.form,
+        catCount: parseInt(event.target.value),
+      },
+    }));
+    event.preventDefault();
+  };
+  handleDogCountChange = (event) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      form: {
+        ...prevState.form,
+        dogCount: parseInt(event.target.value),
+      },
+    }));
+    event.preventDefault();
+  };
+  handleBirdCountChange = (event) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      form: {
+        ...prevState.form,
+        birdCount: parseInt(event.target.value),
+      },
+    }));
+    event.preventDefault();
+  };
+
   handleSubmit = (event) => {
     /*let form = event.target;
     let formValues = {
@@ -67,11 +114,13 @@ class MazeForm extends Component {
     };*/
     this.isFormValid();
     event.preventDefault();
+    console.log("maze form values:");
+    console.log(this.state.form);
   };
 
   isFormValid = () => {
     const { width, height } = this.state.form;
-    let v = width < 36 && width > 9 && height < 36 && height > 9;
+    let v = width < 41 && width > 1 && height < 41 && height > 1;
     this.setState({
       isFormValid: v,
     });
@@ -99,10 +148,11 @@ class MazeForm extends Component {
 
   render() {
     const { form, isFormValid } = this.state;
+
     return (
       <div>
         <Form onSubmit={this.handleSubmit}>
-          <Form.Row>
+          <Form.Row style={{ margin: "2em" }}>
             <Form.Group as={Col}>
               <Form.Label>
                 <div>
@@ -116,7 +166,7 @@ class MazeForm extends Component {
                     Please Enter Maze Width{" "}
                   </div>
                   <div style={{ color: "grey", fontSize: "0.75em" }}>
-                    (Width must be between 10 and 35)
+                    (Width must be between 2 and 40)
                   </div>
                 </div>
               </Form.Label>
@@ -126,11 +176,11 @@ class MazeForm extends Component {
                 placeholder="Enter size"
                 name="width"
                 onChange={this.handleWidthChange}
-                isInvalid={form.width < 10 || form.width > 35}
+                isInvalid={form.width < 2 || form.width > 40}
                 disabled={isFormValid}
               />
               <Form.Control.Feedback type="invalid">
-                Maze width must be between 10 and 35
+                Maze width must be between 2 and 40
               </Form.Control.Feedback>
             </Form.Group>
             <Form.Group as={Col}>
@@ -146,7 +196,7 @@ class MazeForm extends Component {
                     Please Enter Maze Height{" "}
                   </div>
                   <div style={{ color: "grey", fontSize: "0.75em" }}>
-                    (Height must be between 10 and 35)
+                    (Height must be between 2 and 40)
                   </div>
                 </div>
               </Form.Label>
@@ -155,16 +205,16 @@ class MazeForm extends Component {
                 type="number"
                 placeholder="Enter Height"
                 name="height"
-                isInvalid={form.height < 10 || form.height > 35}
+                isInvalid={form.height < 2 || form.height > 40}
                 onChange={this.handleHeightChange}
                 disabled={isFormValid}
               />
               <Form.Control.Feedback type="invalid">
-                Maze height must be between 10 and 35
+                Maze height must be between 2 and 40
               </Form.Control.Feedback>
             </Form.Group>
           </Form.Row>
-          <Form.Row>
+          <Form.Row style={{ margin: "2em" }}>
             <Form.Group as={Col}>
               <Form.Label>
                 <div
@@ -185,7 +235,7 @@ class MazeForm extends Component {
                 disabled={isFormValid}
               >
                 {this.getXOptions().map((item, index) => (
-                  <option>{item}</option>
+                  <option key={index}>{item}</option>
                 ))}
               </Form.Control>
             </Form.Group>
@@ -209,14 +259,185 @@ class MazeForm extends Component {
                 disabled={isFormValid}
               >
                 {this.getYOptions().map((item, index) => (
-                  <option>{item}</option>
+                  <option key={index}>{item}</option>
                 ))}
               </Form.Control>
             </Form.Group>
           </Form.Row>
-
-          <Button variant="primary" type="submit" disabled={isFormValid}>
-            Submit
+          <Form.Row style={{ margin: "2em" }}>
+            <Form.Group as={Col}>
+              <Form.Label>
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      fontSize: "3em",
+                      marginRight: "0.5em",
+                    }}
+                  >
+                    <GiBrickWall />
+                  </div>
+                  <div
+                    style={{
+                      color: "grey",
+                      fontSize: "1.2em",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Please Enter Wall Count
+                  </div>
+                </div>
+              </Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Enter wall count"
+                name="wall"
+                onChange={this.handleWallCountChange}
+                isInvalid={
+                  form.wallCount > form.width * form.height ||
+                  form.wallCount === form.width * form.height
+                }
+                disabled={isFormValid}
+              />
+              <Form.Control.Feedback type="invalid">
+                Wall count cannot be more than cell count
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group as={Col}>
+              <Form.Label>
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      fontSize: "3em",
+                      marginRight: "0.5em",
+                      color: "red",
+                    }}
+                  >
+                    <FaCat />
+                  </div>
+                  <div
+                    style={{
+                      color: "grey",
+                      fontSize: "1.2em",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Please Enter Cat Count
+                  </div>
+                </div>
+              </Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Enter cat count"
+                name="cat"
+                onChange={this.handleCatCountChange}
+                isInvalid={
+                  form.catCount > form.width * form.height ||
+                  form.catCount === form.width * form.height
+                }
+                disabled={isFormValid}
+              />
+              <Form.Control.Feedback type="invalid">
+                Cat count cannot be more than cell count
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Form.Row>
+          <Form.Row style={{ margin: "2em" }}>
+            <Form.Group as={Col}>
+              <Form.Label>
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      fontSize: "3em",
+                      marginRight: "0.5em",
+                      color: "orange",
+                    }}
+                  >
+                    <FaDog />
+                  </div>
+                  <div
+                    style={{
+                      color: "grey",
+                      fontSize: "1.2em",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Please Enter Dog Count
+                  </div>
+                </div>
+              </Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Enter dog count"
+                name="dog"
+                onChange={this.handleDogCountChange}
+                isInvalid={
+                  form.dogCount > form.width * form.height ||
+                  form.dogCount === form.width * form.height
+                }
+                disabled={isFormValid}
+              />
+              <Form.Control.Feedback type="invalid">
+                Dog count cannot be more than cell count
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group as={Col}>
+              <Form.Label>
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      fontSize: "3em",
+                      marginRight: "0.5em",
+                      color: "#e8d129",
+                    }}
+                  >
+                    <FaKiwiBird />
+                  </div>
+                  <div
+                    style={{
+                      color: "grey",
+                      fontSize: "1.2em",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Please Enter Bird Count
+                  </div>
+                </div>
+              </Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Enter bird count"
+                name="bird"
+                onChange={this.handleBirdCountChange}
+                isInvalid={
+                  form.birdCount > form.width * form.height ||
+                  form.birdCount === form.width * form.height
+                }
+                disabled={isFormValid}
+              />
+              <Form.Control.Feedback type="invalid">
+                Bird count cannot be more than cell count
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Form.Row>
+          <Button
+            variant="primary"
+            type="submit"
+            disabled={isFormValid}
+            style={{ margin: "2em" }}
+          >
+            Create Maze
           </Button>
         </Form>
       </div>
