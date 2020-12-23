@@ -12,11 +12,18 @@ export var MazeSearcher = {
   bfsVisitedNodes: [],
   astarPathNodes: [],
   astarVisitedNodes: [],
+  gbfsVisitedNodes: [],
 
   search: function (grid, searchMethod) {
-    MazeSearcher.grid = grid;
+    MazeSearcher.grid = grid.map(function (arr) {
+      return arr.slice();
+    });
     MazeSearcher.setStartAndGoal();
     MazeSearcher.createNodeArray();
+    console.log("searchMethod")
+    console.log(searchMethod)
+    console.log("initial grid")
+    console.log(grid)
 
     if (searchMethod === "DFS") {
       MazeSearcher.dfsVisitedNodes = MazeSearcher.depthFirstSearch();
@@ -28,6 +35,10 @@ export var MazeSearcher = {
     }
     if (searchMethod === "A*") {
       MazeSearcher.astarPathNodes = MazeSearcher.aStarSearch();
+      MazeSearcher.createNodeArray();
+    }
+    if (searchMethod === "Greedy Best First Search") {
+      MazeSearcher.gbfsVisitedNodes = MazeSearcher.greedyBestFirstSearch();
       MazeSearcher.createNodeArray();
     }
   },
@@ -107,10 +118,6 @@ export var MazeSearcher = {
         astarSearchedGrid[y][x] = 0;
       }
     }
-    console.log("MazeSearcher.astarVisitedNodes");
-    console.log(MazeSearcher.astarVisitedNodes);
-    console.log("MazeSearcher.astarPathNodes");
-    console.log(MazeSearcher.astarPathNodes);
 
     for (var x = 0; x < MazeSearcher.astarVisitedNodes.length; x++) {
       node = MazeSearcher.astarVisitedNodes[x];
@@ -120,14 +127,33 @@ export var MazeSearcher = {
       node = MazeSearcher.astarPathNodes[x];
       astarSearchedGrid[node.yCoord][node.xCoord] = 2;
     }
-    console.log("visited astarSearchedGrid");
-    console.log(astarSearchedGrid);
-
-
-    console.log("path astarSearchedGrid");
-    console.log(astarSearchedGrid);
 
     return astarSearchedGrid;
+  },
+
+  getGreedyBestFirstSearchedGrid: function () {
+    let gbfsSearchedGrid = [];
+    let node;
+    let pathNode =
+      MazeSearcher.gbfsVisitedNodes[MazeSearcher.gbfsVisitedNodes.length - 1];
+
+    for (var y = 0; y < MazeSearcher.grid.length; y++) {
+      for (var x = 0; x < MazeSearcher.grid[0].length; x++) {
+        gbfsSearchedGrid[y] = MazeSearcher.grid[y] || [];
+        gbfsSearchedGrid[y][x] = 0;
+      }
+    }
+
+    for (var x = 0; x < MazeSearcher.gbfsVisitedNodes.length; x++) {
+      node = MazeSearcher.gbfsVisitedNodes[x];
+      gbfsSearchedGrid[node.yCoord][node.xCoord] = 1;
+    }
+
+    while (pathNode.previousNode !== null) {
+      pathNode = pathNode.previousNode;
+      gbfsSearchedGrid[pathNode.yCoord][pathNode.xCoord] = 2;
+    }
+    return gbfsSearchedGrid;
   },
 
   createNodeArray: function () {
@@ -165,7 +191,6 @@ export var MazeSearcher = {
       closestNode = unvisitedNodes.shift();
       if (closestNode.value === "g") {
         console.log("dfs goal found");
-        console.log(closestNode);
         closestNode.isVisited = true;
         visitedNodes.push(closestNode);
         return visitedNodes;
@@ -199,7 +224,6 @@ export var MazeSearcher = {
         visitedNodes.push(closestNode);
         closestNode.isVisited = true;
         console.log("bfs found goal");
-        console.log(closestNode);
         return visitedNodes;
       }
       visitedNodes.push(closestNode);
@@ -227,9 +251,6 @@ export var MazeSearcher = {
 
     let visiteds = [];
 
-    console.log("startNode");
-    console.log(startNode);
-
     let unvisitedNodes = []; //open list
     let visitedNodes = []; //closed list
 
@@ -251,9 +272,6 @@ export var MazeSearcher = {
         visitedNodes.push(closestNode);
         closestNode.isVisited = true;
         console.log("A* found goal");
-        console.log(closestNode);
-        console.log("unvisitedNodes");
-        console.log(unvisitedNodes);
         MazeSearcher.astarVisitedNodes = visiteds;
         return visitedNodes;
       }
@@ -285,8 +303,46 @@ export var MazeSearcher = {
         visiteds.push(neighbour);
       }
     }
-    console.log("run astar search");
     MazeSearcher.astarVisitedNodes = visiteds;
+    return visitedNodes;
+  },
+
+  greedyBestFirstSearch: function () {
+    let width = MazeSearcher.grid[0].length;
+
+    let startNode =
+      MazeSearcher.nodeArr[width * MazeSearcher.startY + MazeSearcher.startX];
+    let unvisitedNodes = [];
+    let visitedNodes = [];
+    startNode.distance = MazeSearcher.manhattenDistance(startNode) + startNode.value;
+
+    unvisitedNodes.push(startNode);
+    let closestNode;
+    let unvisitedNeighbours;
+
+    while (unvisitedNodes.length !== 0) {
+      closestNode = unvisitedNodes.shift();
+      if (closestNode.value === "g") {
+        console.log("gbfs goal found");
+        closestNode.isVisited = true;
+        visitedNodes.push(closestNode);
+        return visitedNodes;
+      }
+      closestNode.isVisited = true;
+      visitedNodes.push(closestNode);
+
+      unvisitedNeighbours = MazeSearcher.getUnvisitedNeighbours(closestNode);
+      for (let unvisitedNeighbour of unvisitedNeighbours) {
+        unvisitedNeighbour.distance = MazeSearcher.manhattenDistance(
+          unvisitedNeighbour
+        ) + unvisitedNeighbour.value;
+      }
+      unvisitedNeighbours.sort((a, b) => a.distance - b.distance);
+      for (var x = 0; x < unvisitedNeighbours.length; x++) {
+        unvisitedNeighbours[x].previousNode = closestNode;
+        unvisitedNodes.unshift(unvisitedNeighbours[x]);
+      }
+    }
     return visitedNodes;
   },
 

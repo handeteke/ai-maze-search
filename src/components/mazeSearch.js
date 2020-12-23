@@ -7,8 +7,8 @@ export default class MazeSearch extends Component {
     super(props);
 
     this.state = {
-      searchOptions: ["DFS", "BFS", "A*"],
-      selectedSearch: "",
+      searchOptions: ["DFS", "BFS", "A*", "Greedy Best First Search"],
+      selectedSearch: "DFS",
       grid: this.setGridValues(),
       searchResults: [],
     };
@@ -121,10 +121,6 @@ export default class MazeSearch extends Component {
     let searchedGrid = MazeSearcher.getAStarSearchedGrid();
     let results = searchResults;
 
-    console.log(
-      "this.getVisitedCount(searchedGrid)",
-      this.getVisitedCount(searchedGrid)
-    );
     results.push(
       <div
         style={{
@@ -143,6 +139,34 @@ export default class MazeSearch extends Component {
     });
   };
 
+  getGreedyBestFirstSearchResult = () => {
+    const { searchResults } = this.state;
+    let searchedGrid = MazeSearcher.getGreedyBestFirstSearchedGrid();
+    let results = searchResults;
+
+    results.push(
+      <div
+        style={{
+          marginLeft: "2em",
+          fontWeight: "bold",
+          fontSize: "1.1em",
+          marginBottom: "2em",
+        }}
+      >
+        <div>
+          GREEDY BEST FIRST SEARCH PATH COST: {this.getPathCost(searchedGrid)}
+        </div>
+        <div>
+          GREEDY BEST FIRST SEARCH VISITED CELL COUNT:{" "}
+          {this.getVisitedCount(searchedGrid)}
+        </div>
+      </div>
+    );
+    this.setState({
+      searchResults: results,
+    });
+  };
+
   getSearchResults = () => {
     const { selectedSearch } = this.state;
     if (selectedSearch === "DFS") {
@@ -153,6 +177,9 @@ export default class MazeSearch extends Component {
     }
     if (selectedSearch === "A*") {
       this.getAStarSearchResult();
+    }
+    if (selectedSearch === "Greedy Best First Search") {
+      this.getGreedyBestFirstSearchResult();
     }
   };
 
@@ -197,6 +224,7 @@ export default class MazeSearch extends Component {
                 as="select"
                 defaultValue="Choose..."
                 name="searchMethod"
+                defaultValue="DFS"
                 onChange={this.handleSearchMethodChange}
               >
                 {searchOptions.map((item, index) => (
