@@ -7,9 +7,10 @@ export default class MazeSearch extends Component {
     super(props);
 
     this.state = {
-      searchOptions: ["Recursive Search", "DFS", "BFS", "A*"],
-      selectedSearct: "",
+      searchOptions: ["DFS", "BFS", "A*"],
+      selectedSearch: "",
       grid: this.setGridValues(),
+      searchResults: [],
     };
   }
 
@@ -37,23 +38,151 @@ export default class MazeSearch extends Component {
     return newGrid;
   };
 
+  getPathCost = (searchedGrid) => {
+    const { grid } = this.state;
+    let cost = 0;
+    for (var y = 0; y < searchedGrid.length; y++) {
+      for (var x = 0; x < searchedGrid[0].length; x++) {
+        if (searchedGrid[y][x] === 2) {
+          if (grid[y][x] !== "s" && grid[y][x] !== "g") {
+            cost = cost + grid[y][x];
+          }
+        }
+      }
+    }
+    return cost;
+  };
+
+  getVisitedCount = (searchedGrid) => {
+    const { grid } = this.state;
+    console.log("state grid");
+    console.log(grid);
+    console.log("searchedGrid");
+    console.log(searchedGrid);
+    let count = 0;
+    for (var y = 0; y < searchedGrid.length; y++) {
+      for (var x = 0; x < searchedGrid[0].length; x++) {
+        if (searchedGrid[y][x] === 2 || searchedGrid[y][x] === 1) {
+          if (grid[y][x] !== "s" && grid[y][x] !== "g") {
+            count = count + 1;
+          }
+        }
+      }
+    }
+    return count;
+  };
+
+  getDfsSearchResult = () => {
+    const { searchResults } = this.state;
+    let searchedGrid = MazeSearcher.getDfsSearchedGrid();
+    let results = searchResults;
+    results.push(
+      <div
+        style={{
+          marginLeft: "2em",
+          fontWeight: "bold",
+          fontSize: "1.1em",
+          marginBottom: "2em",
+        }}
+      >
+        <div>DFS PATH COST: {this.getPathCost(searchedGrid)}</div>
+        <div>DFS VISITED CELL COUNT: {this.getVisitedCount(searchedGrid)}</div>
+      </div>
+    );
+    this.setState({
+      searchResults: results,
+    });
+  };
+
+  getBfsSearchResult = () => {
+    const { searchResults } = this.state;
+    let searchedGrid = MazeSearcher.getBfsSearchedGrid();
+    let results = searchResults;
+    results.push(
+      <div
+        style={{
+          marginLeft: "2em",
+          fontWeight: "bold",
+          fontSize: "1.1em",
+          marginBottom: "2em",
+        }}
+      >
+        <div>BFS PATH COST: {this.getPathCost(searchedGrid)}</div>
+        <div>BFS VISITED CELL COUNT: {this.getVisitedCount(searchedGrid)}</div>
+      </div>
+    );
+    this.setState({
+      searchResults: results,
+    });
+  };
+
+  getAStarSearchResult = () => {
+    const { searchResults } = this.state;
+    let searchedGrid = MazeSearcher.getAStarSearchedGrid();
+    let results = searchResults;
+    console.log("searchedGrid");
+    console.log(searchedGrid);
+    console.log(
+      "this.getPathCost(searchedGrid)",
+      this.getPathCost(searchedGrid)
+    );
+    console.log(
+      "this.getVisitedCount(searchedGrid)",
+      this.getVisitedCount(searchedGrid)
+    );
+    results.push(
+      <div
+        style={{
+          marginLeft: "2em",
+          fontWeight: "bold",
+          fontSize: "1.1em",
+          marginBottom: "2em",
+        }}
+      >
+        <div>A* PATH COST: {this.getPathCost(searchedGrid)}</div>
+        <div>A* VISITED CELL COUNT: {this.getVisitedCount(searchedGrid)}</div>
+      </div>
+    );
+    this.setState({
+      searchResults: results,
+    });
+  };
+
+  getSearchResults = () => {
+    const { selectedSearch } = this.state;
+    if (selectedSearch === "DFS") {
+      this.getDfsSearchResult();
+    }
+    if (selectedSearch === "BFS") {
+      this.getBfsSearchResult();
+    }
+    if (selectedSearch === "A*") {
+      console.log("selected searh", selectedSearch);
+      this.getAStarSearchResult();
+    }
+  };
+
   handleSearchMethodChange = (event) => {
     this.setState({
-      selectedSearct: parseInt(event.target.value),
+      selectedSearch: event.target.value,
     });
     event.preventDefault();
   };
 
   handleGo = (event) => {
+    let searchInputGrid = this.state.grid.map(function (arr) {
+      return arr.slice();
+    });
     MazeSearcher.search(
-      this.state.grid,
+      searchInputGrid,
       event.target.elements.searchMethod.value
     );
+    this.getSearchResults();
     event.preventDefault();
   };
 
   render() {
-    const { searchOptions } = this.state;
+    const { searchOptions, selectedSearch, searchResults } = this.state;
     return (
       <div>
         <Form onSubmit={this.handleGo}>
@@ -91,6 +220,9 @@ export default class MazeSearch extends Component {
             GO
           </Button>
         </Form>
+        {searchResults.map((item, index) => (
+          <div key={index}>{item}</div>
+        ))}
       </div>
     );
   }

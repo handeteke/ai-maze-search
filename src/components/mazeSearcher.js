@@ -5,40 +5,130 @@ export var MazeSearcher = {
   grid: null,
   startX: 0,
   startY: 0,
+  goalX: 0,
+  goalY: 0,
   nodeArr: [],
+  dfsVisitedNodes: [],
+  dfsSearchedGrid: [],
+  bfsVisitedNodes: [],
+  bfsSearchedGrid: [],
+  astarVisitedNodes: [],
+  astarSearchedGrid: [],
 
   search: function (grid, searchMethod) {
     MazeSearcher.grid = grid;
+    MazeSearcher.setStartAndGoal();
+    MazeSearcher.createNodeArray();
 
-    for (var y = 0; y < grid.length; y++) {
-      for (var x = 0; x < grid[0].length; x++) {
+    if (searchMethod === "DFS") {
+      MazeSearcher.dfsVisitedNodes = MazeSearcher.depthFirstSearch();
+      MazeSearcher.createNodeArray();
+      MazeSearcher.dfsSearchedGrid = MazeSearcher.getDfsSearchedGrid();
+    }
+    if (searchMethod === "BFS") {
+      MazeSearcher.bfsVisitedNodes = MazeSearcher.breadthFirstSearch();
+      MazeSearcher.createNodeArray();
+      MazeSearcher.bfsSearchedGrid = MazeSearcher.getBfsSearchedGrid();
+    }
+    if (searchMethod === "A*") {
+      MazeSearcher.astarVisitedNodes = MazeSearcher.aStarSearch();
+      console.log("after a*");
+      console.log(MazeSearcher.astarVisitedNodes);
+      MazeSearcher.createNodeArray();
+      MazeSearcher.astarSearchedGrid = MazeSearcher.getAStarSearchedGrid();
+    }
+  },
+
+  setStartAndGoal: function () {
+    for (var y = 0; y < MazeSearcher.grid.length; y++) {
+      for (var x = 0; x < MazeSearcher.grid[0].length; x++) {
         if (MazeSearcher.grid[y][x] === "s") {
           MazeSearcher.startX = x;
           MazeSearcher.startY = y;
         }
+        if (MazeSearcher.grid[y][x] === "g") {
+          MazeSearcher.goalX = x;
+          MazeSearcher.goalY = y;
+        }
       }
     }
-    MazeSearcher.createNodeArray();
+  },
 
-    if (searchMethod === "Recursive Search") {
-      //MazeSearcher.recursiveSearch();
-    }
-    if (searchMethod === "DFS") {
-      MazeSearcher.depthFirstSearch();
-    }
-    if (searchMethod === "BFS") {
-      MazeSearcher.breadthFirstSearch(grid);
-    }
-    if (searchMethod === "A*") {
-      MazeSearcher.aStarSearch(grid);
+  getDfsSearchedGrid: function () {
+    let dfsSearchedGrid = [];
+    let node;
+    let pathNode =
+      MazeSearcher.dfsVisitedNodes[MazeSearcher.dfsVisitedNodes.length - 1];
+
+    for (var y = 0; y < MazeSearcher.grid.length; y++) {
+      for (var x = 0; x < MazeSearcher.grid[0].length; x++) {
+        dfsSearchedGrid[y] = MazeSearcher.grid[y] || [];
+        dfsSearchedGrid[y][x] = 0;
+      }
     }
 
-    console.log("MazeSearcher grid");
-    console.log(grid);
+    for (var x = 0; x < MazeSearcher.dfsVisitedNodes.length; x++) {
+      node = MazeSearcher.dfsVisitedNodes[x];
+      dfsSearchedGrid[node.yCoord][node.xCoord] = 1;
+    }
+
+    while (pathNode.previousNode !== null) {
+      pathNode = pathNode.previousNode;
+      dfsSearchedGrid[pathNode.yCoord][pathNode.xCoord] = 2;
+    }
+    return dfsSearchedGrid;
+  },
+
+  getBfsSearchedGrid: function () {
+    let bfsSearchedGrid = [];
+    let node;
+    let pathNode =
+      MazeSearcher.bfsVisitedNodes[MazeSearcher.bfsVisitedNodes.length - 1];
+
+    for (var y = 0; y < MazeSearcher.grid.length; y++) {
+      for (var x = 0; x < MazeSearcher.grid[0].length; x++) {
+        bfsSearchedGrid[y] = MazeSearcher.grid[y] || [];
+        bfsSearchedGrid[y][x] = 0;
+      }
+    }
+
+    for (var x = 0; x < MazeSearcher.bfsVisitedNodes.length; x++) {
+      node = MazeSearcher.bfsVisitedNodes[x];
+      bfsSearchedGrid[node.yCoord][node.xCoord] = 1;
+    }
+
+    while (pathNode.previousNode !== null) {
+      pathNode = pathNode.previousNode;
+      bfsSearchedGrid[pathNode.yCoord][pathNode.xCoord] = 2;
+    }
+    return bfsSearchedGrid;
+  },
+
+  getAStarSearchedGrid: function () {
+    let astarSearchedGrid = [];
+    let node;
+
+    for (var y = 0; y < MazeSearcher.grid.length; y++) {
+      for (var x = 0; x < MazeSearcher.grid[0].length; x++) {
+        astarSearchedGrid[y] = MazeSearcher.grid[y] || [];
+        astarSearchedGrid[y][x] = 0;
+      }
+    }
+
+    for (var x = 0; x < MazeSearcher.astarVisitedNodes.length; x++) {
+      node = MazeSearcher.astarVisitedNodes[x];
+      astarSearchedGrid[node.yCoord][node.xCoord] = 2;
+    }
+    console.log("visited astarSearchedGrid");
+    console.log(astarSearchedGrid);
+
+    return astarSearchedGrid;
   },
 
   createNodeArray: function () {
     let node;
+
+    MazeSearcher.nodeArr = [];
 
     for (var y = 0; y < MazeSearcher.grid.length; y++) {
       for (var x = 0; x < MazeSearcher.grid[0].length; x++) {
@@ -56,35 +146,6 @@ export var MazeSearcher = {
     console.log(MazeSearcher.nodeArr);
   },
 
-  recursiveSearch: function () {
-    console.log("x", MazeSearcher.startX);
-    console.log("y", MazeSearcher.startY);
-
-    console.log("run simple search");
-    MazeSearcher.traverse(MazeSearcher.startX, MazeSearcher.startY);
-  },
-
-  traverse: function (column, row) {
-    if (this.grid[column][row] === "g") {
-      console.log("You solved at maze: " + column + ", " + row);
-    } else if (this.grid[column][row] === 5) {
-      console.log("You are on a valid position");
-      this.grid[column][row] = 9;
-      if (column < this.grid.length - 1) {
-        MazeSearcher.traverse(column + 1, row);
-      }
-      if (row < this.grid[column].length - 1) {
-        MazeSearcher.traverse(column, row + 1);
-      }
-      if (column > 0) {
-        MazeSearcher.traverse(column - 1, row);
-      }
-      if (row > 0) {
-        MazeSearcher.traverse(column, row - 1);
-      }
-    }
-  },
-
   depthFirstSearch: function () {
     let width = MazeSearcher.grid[0].length;
 
@@ -95,24 +156,27 @@ export var MazeSearcher = {
 
     unvisitedNodes.push(startNode);
     let closestNode;
+    let unvisitedNeighbours;
 
     while (unvisitedNodes.length !== 0) {
       closestNode = unvisitedNodes.shift();
       if (closestNode.value === "g") {
         console.log("dfs goal found");
         console.log(closestNode);
+        closestNode.isVisited = true;
+        visitedNodes.push(closestNode);
         return visitedNodes;
       }
-      visitedNodes.push(closestNode);
       closestNode.isVisited = true;
-      let unvisitedNeighbours = MazeSearcher.getUnvisitedNeighbours(closestNode);
+      visitedNodes.push(closestNode);
+
+      unvisitedNeighbours = MazeSearcher.getUnvisitedNeighbours(closestNode);
       for (let unvisitedNeighbour of unvisitedNeighbours) {
         unvisitedNeighbour.previousNode = closestNode;
         unvisitedNodes.unshift(unvisitedNeighbour);
       }
     }
-    console.log("run depth first search");
-    //return visitedNodes;
+    return visitedNodes;
   },
 
   breadthFirstSearch: function () {
@@ -129,10 +193,12 @@ export var MazeSearcher = {
     while (unvisitedNodes.length !== 0) {
       closestNode = unvisitedNodes.shift();
       if (closestNode.value === "g") {
+        visitedNodes.push(closestNode);
+        closestNode.isVisited = true;
         console.log("bfs found goal");
         console.log(closestNode);
         return visitedNodes;
-      } 
+      }
       visitedNodes.push(closestNode);
       closestNode.isVisited = true;
       unvisitedNeighbours = MazeSearcher.getUnvisitedNeighbours(closestNode);
@@ -148,48 +214,70 @@ export var MazeSearcher = {
         }
       }
     }
-    console.log("run breadth first search");
     return visitedNodes;
   },
-  /*
-  aStarSearch: function (grid, startNode, finishNode) {
-    if (!startNode || !finishNode || startNode === finishNode) {
-      return false;
-    }
+  aStarSearch: function () {
+    let width = MazeSearcher.grid[0].length;
+    let startNode =
+      MazeSearcher.nodeArr[width * MazeSearcher.startY + MazeSearcher.startX];
+
+    console.log("startNode");
+    console.log(startNode);
+
     let unvisitedNodes = []; //open list
     let visitedNodes = []; //closed list
+
     startNode.distance = 0;
+    startNode.totalDistance = 0;
+
     unvisitedNodes.push(startNode);
+    let neighbours;
+    let distance;
+    let closestNode;
 
     while (unvisitedNodes.length !== 0) {
       unvisitedNodes.sort((a, b) => a.totalDistance - b.totalDistance);
-      let closestNode = unvisitedNodes.shift();
-      if (closestNode === finishNode) return visitedNodes;
+      closestNode = unvisitedNodes.shift();
 
+      if (closestNode.value === "g") {
+        closestNode.distance = closestNode.distance + 5;
+        visitedNodes.push(closestNode);
+        closestNode.isVisited = true;
+        console.log("A* found goal");
+        console.log(closestNode);
+        console.log("unvisitedNodes");
+        console.log(unvisitedNodes);
+        return visitedNodes;
+      }
       closestNode.isVisited = true;
       visitedNodes.push(closestNode);
-
-      let neighbours = getNeighbours(closestNode, grid);
+      neighbours = MazeSearcher.getAllNeighbours(closestNode);
       for (let neighbour of neighbours) {
-        let distance = closestNode.distance + 1;
+        if (neighbour.value === "g" || neighbour.value === "s") {
+          distance = closestNode.distance;
+        } else {
+          distance = closestNode.distance + neighbour.value;
+        }
         //f(n) = g(n) + h(n)
-        if (neighbourNotInUnvisitedNodes(neighbour, unvisitedNodes)) {
-          unvisitedNodes.unshift(neighbour);
+        if (
+          MazeSearcher.neighbourNotInUnvisitedNodes(neighbour, unvisitedNodes)
+        ) {
           neighbour.distance = distance;
           neighbour.totalDistance =
-            distance + manhattenDistance(neighbour, finishNode);
+            distance + MazeSearcher.manhattenDistance(neighbour);
           neighbour.previousNode = closestNode;
+          unvisitedNodes.unshift(neighbour);
         } else if (distance < neighbour.distance) {
           neighbour.distance = distance;
           neighbour.totalDistance =
-            distance + manhattenDistance(neighbour, finishNode);
+            distance + MazeSearcher.manhattenDistance(neighbour);
           neighbour.previousNode = closestNode;
         }
       }
     }
     console.log("run astar search");
     return visitedNodes;
-  },*/
+  },
 
   getUnvisitedNeighbours: function (node) {
     let width = MazeSearcher.grid[0].length;
@@ -252,9 +340,6 @@ export var MazeSearcher = {
         );
       }
     }
-    console.log("unvisited neighbours");
-    console.log(neighbours);
-
     return neighbours;
   },
 
@@ -269,11 +354,54 @@ export var MazeSearcher = {
     }
     return true;
   },
-  /*
- 
-  manhattenDistance: function (node, finishNode) {
-    let x = Math.abs(node.row - finishNode.row);
-    let y = Math.abs(node.col - finishNode.col);
-    return x + y;
-  }*/
+
+  manhattenDistance: function (node) {
+    let x = Math.abs(node.yCoord - MazeSearcher.goalY);
+    let y = Math.abs(node.xCoord - MazeSearcher.goalX);
+    return (x + y) * 5;
+  },
+
+  getAllNeighbours: function (node) {
+    let width = MazeSearcher.grid[0].length;
+    let heigth = MazeSearcher.grid.length;
+    let neighbours = [];
+
+    //right neighbour
+    if (
+      node.xCoord + 1 < width &&
+      MazeSearcher.grid[node.yCoord][node.xCoord + 1] !== "w"
+    ) {
+      neighbours.push(
+        MazeSearcher.nodeArr[width * node.yCoord + (node.xCoord + 1)]
+      );
+    }
+    //left neighbour
+    if (
+      0 < node.xCoord - 1 &&
+      MazeSearcher.grid[node.yCoord][node.xCoord - 1] !== "w"
+    ) {
+      neighbours.push(
+        MazeSearcher.nodeArr[width * node.yCoord + (node.xCoord - 1)]
+      );
+    }
+    //up neighbour
+    if (
+      0 < node.yCoord - 1 &&
+      MazeSearcher.grid[node.yCoord - 1][node.xCoord] !== "w"
+    ) {
+      neighbours.push(
+        MazeSearcher.nodeArr[width * (node.yCoord - 1) + node.xCoord]
+      );
+    }
+    //down neighbour
+    if (
+      node.yCoord + 1 < heigth &&
+      MazeSearcher.grid[node.yCoord + 1][node.xCoord] !== "w"
+    ) {
+      neighbours.push(
+        MazeSearcher.nodeArr[width * (node.yCoord + 1) + node.xCoord]
+      );
+    }
+    return neighbours;
+  },
 };
