@@ -120,12 +120,7 @@ export default class MazeSearch extends Component {
     const { searchResults } = this.state;
     let searchedGrid = MazeSearcher.getAStarSearchedGrid();
     let results = searchResults;
-    console.log("searchedGrid");
-    console.log(searchedGrid);
-    console.log(
-      "this.getPathCost(searchedGrid)",
-      this.getPathCost(searchedGrid)
-    );
+
     console.log(
       "this.getVisitedCount(searchedGrid)",
       this.getVisitedCount(searchedGrid)
@@ -157,7 +152,6 @@ export default class MazeSearch extends Component {
       this.getBfsSearchResult();
     }
     if (selectedSearch === "A*") {
-      console.log("selected searh", selectedSearch);
       this.getAStarSearchResult();
     }
   };
@@ -182,7 +176,7 @@ export default class MazeSearch extends Component {
   };
 
   render() {
-    const { searchOptions, selectedSearch, searchResults } = this.state;
+    const { searchOptions, searchResults } = this.state;
     return (
       <div>
         <Form onSubmit={this.handleGo}>

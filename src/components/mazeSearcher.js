@@ -9,11 +9,9 @@ export var MazeSearcher = {
   goalY: 0,
   nodeArr: [],
   dfsVisitedNodes: [],
-  dfsSearchedGrid: [],
   bfsVisitedNodes: [],
-  bfsSearchedGrid: [],
+  astarPathNodes: [],
   astarVisitedNodes: [],
-  astarSearchedGrid: [],
 
   search: function (grid, searchMethod) {
     MazeSearcher.grid = grid;
@@ -23,19 +21,14 @@ export var MazeSearcher = {
     if (searchMethod === "DFS") {
       MazeSearcher.dfsVisitedNodes = MazeSearcher.depthFirstSearch();
       MazeSearcher.createNodeArray();
-      MazeSearcher.dfsSearchedGrid = MazeSearcher.getDfsSearchedGrid();
     }
     if (searchMethod === "BFS") {
       MazeSearcher.bfsVisitedNodes = MazeSearcher.breadthFirstSearch();
       MazeSearcher.createNodeArray();
-      MazeSearcher.bfsSearchedGrid = MazeSearcher.getBfsSearchedGrid();
     }
     if (searchMethod === "A*") {
-      MazeSearcher.astarVisitedNodes = MazeSearcher.aStarSearch();
-      console.log("after a*");
-      console.log(MazeSearcher.astarVisitedNodes);
+      MazeSearcher.astarPathNodes = MazeSearcher.aStarSearch();
       MazeSearcher.createNodeArray();
-      MazeSearcher.astarSearchedGrid = MazeSearcher.getAStarSearchedGrid();
     }
   },
 
@@ -114,12 +107,24 @@ export var MazeSearcher = {
         astarSearchedGrid[y][x] = 0;
       }
     }
+    console.log("MazeSearcher.astarVisitedNodes");
+    console.log(MazeSearcher.astarVisitedNodes);
+    console.log("MazeSearcher.astarPathNodes");
+    console.log(MazeSearcher.astarPathNodes);
 
     for (var x = 0; x < MazeSearcher.astarVisitedNodes.length; x++) {
       node = MazeSearcher.astarVisitedNodes[x];
+      astarSearchedGrid[node.yCoord][node.xCoord] = 1;
+    }
+    for (var x = 0; x < MazeSearcher.astarPathNodes.length; x++) {
+      node = MazeSearcher.astarPathNodes[x];
       astarSearchedGrid[node.yCoord][node.xCoord] = 2;
     }
     console.log("visited astarSearchedGrid");
+    console.log(astarSearchedGrid);
+
+
+    console.log("path astarSearchedGrid");
     console.log(astarSearchedGrid);
 
     return astarSearchedGrid;
@@ -142,8 +147,6 @@ export var MazeSearcher = {
         MazeSearcher.nodeArr.push(node);
       }
     }
-    console.log("MazeSearcher nodeArr");
-    console.log(MazeSearcher.nodeArr);
   },
 
   depthFirstSearch: function () {
@@ -216,10 +219,13 @@ export var MazeSearcher = {
     }
     return visitedNodes;
   },
+
   aStarSearch: function () {
     let width = MazeSearcher.grid[0].length;
     let startNode =
       MazeSearcher.nodeArr[width * MazeSearcher.startY + MazeSearcher.startX];
+
+    let visiteds = [];
 
     console.log("startNode");
     console.log(startNode);
@@ -238,6 +244,7 @@ export var MazeSearcher = {
     while (unvisitedNodes.length !== 0) {
       unvisitedNodes.sort((a, b) => a.totalDistance - b.totalDistance);
       closestNode = unvisitedNodes.shift();
+      visiteds.push(closestNode);
 
       if (closestNode.value === "g") {
         closestNode.distance = closestNode.distance + 5;
@@ -247,11 +254,13 @@ export var MazeSearcher = {
         console.log(closestNode);
         console.log("unvisitedNodes");
         console.log(unvisitedNodes);
+        MazeSearcher.astarVisitedNodes = visiteds;
         return visitedNodes;
       }
       closestNode.isVisited = true;
       visitedNodes.push(closestNode);
       neighbours = MazeSearcher.getAllNeighbours(closestNode);
+
       for (let neighbour of neighbours) {
         if (neighbour.value === "g" || neighbour.value === "s") {
           distance = closestNode.distance;
@@ -273,9 +282,11 @@ export var MazeSearcher = {
             distance + MazeSearcher.manhattenDistance(neighbour);
           neighbour.previousNode = closestNode;
         }
+        visiteds.push(neighbour);
       }
     }
     console.log("run astar search");
+    MazeSearcher.astarVisitedNodes = visiteds;
     return visitedNodes;
   },
 
