@@ -76,19 +76,40 @@ export default class MazeSearch extends Component {
     const { searchResults } = this.state;
     let searchedGrid = MazeSearcher.getDfsSearchedGrid();
     let results = searchResults;
-    results.push(
-      <div
-        style={{
-          marginLeft: "2em",
-          fontWeight: "bold",
-          fontSize: "1.1em",
-          marginBottom: "2em",
-        }}
-      >
-        <div>DFS PATH COST: {this.getPathCost(searchedGrid)}</div>
-        <div>DFS VISITED CELL COUNT: {this.getVisitedCount(searchedGrid)}</div>
-      </div>
-    );
+
+    let pathCost = this.getPathCost(searchedGrid);
+    let result;
+    if (pathCost !== 0) {
+      result = (
+        <div
+          style={{
+            marginLeft: "2em",
+            fontWeight: "bold",
+            fontSize: "1.1em",
+            marginBottom: "2em",
+          }}
+        >
+          <div>DFS PATH COST: {pathCost}</div>
+          <div>
+            DFS VISITED CELL COUNT: {this.getVisitedCount(searchedGrid)}
+          </div>
+        </div>
+      );
+    } else {
+      result = (
+        <div
+          style={{
+            marginLeft: "2em",
+            fontWeight: "bold",
+            fontSize: "1.1em",
+            marginBottom: "2em",
+          }}
+        >
+          <div>NO DFS SOLUTION</div>
+        </div>
+      );
+    }
+    results.push(result);
     this.setState({
       searchResults: results,
     });
@@ -98,19 +119,39 @@ export default class MazeSearch extends Component {
     const { searchResults } = this.state;
     let searchedGrid = MazeSearcher.getBfsSearchedGrid();
     let results = searchResults;
-    results.push(
-      <div
-        style={{
-          marginLeft: "2em",
-          fontWeight: "bold",
-          fontSize: "1.1em",
-          marginBottom: "2em",
-        }}
-      >
-        <div>BFS PATH COST: {this.getPathCost(searchedGrid)}</div>
-        <div>BFS VISITED CELL COUNT: {this.getVisitedCount(searchedGrid)}</div>
-      </div>
-    );
+    let pathCost = this.getPathCost(searchedGrid);
+    let result;
+    if (pathCost !== 0) {
+      result = (
+        <div
+          style={{
+            marginLeft: "2em",
+            fontWeight: "bold",
+            fontSize: "1.1em",
+            marginBottom: "2em",
+          }}
+        >
+          <div>BFS PATH COST: {pathCost}</div>
+          <div>
+            BFS VISITED CELL COUNT: {this.getVisitedCount(searchedGrid)}
+          </div>
+        </div>
+      );
+    } else {
+      result = (
+        <div
+          style={{
+            marginLeft: "2em",
+            fontWeight: "bold",
+            fontSize: "1.1em",
+            marginBottom: "2em",
+          }}
+        >
+          <div>NO BFS SOLUTION</div>
+        </div>
+      );
+    }
+    results.push(result);
     this.setState({
       searchResults: results,
     });
@@ -121,19 +162,38 @@ export default class MazeSearch extends Component {
     let searchedGrid = MazeSearcher.getAStarSearchedGrid();
     let results = searchResults;
 
-    results.push(
-      <div
-        style={{
-          marginLeft: "2em",
-          fontWeight: "bold",
-          fontSize: "1.1em",
-          marginBottom: "2em",
-        }}
-      >
-        <div>A* PATH COST: {this.getPathCost(searchedGrid)}</div>
-        <div>A* VISITED CELL COUNT: {this.getVisitedCount(searchedGrid)}</div>
-      </div>
-    );
+    let pathCost = this.getPathCost(searchedGrid);
+    let result;
+    if (pathCost !== 0) {
+      result = (
+        <div
+          style={{
+            marginLeft: "2em",
+            fontWeight: "bold",
+            fontSize: "1.1em",
+            marginBottom: "2em",
+          }}
+        >
+          <div>A* PATH COST: {pathCost}</div>
+          <div>A* VISITED CELL COUNT: {this.getVisitedCount(searchedGrid)}</div>
+        </div>
+      );
+    } else {
+      result = (
+        <div
+          style={{
+            marginLeft: "2em",
+            fontWeight: "bold",
+            fontSize: "1.1em",
+            marginBottom: "2em",
+          }}
+        >
+          <div>NO A* SOLUTION</div>
+        </div>
+      );
+    }
+    results.push(result);
+
     this.setState({
       searchResults: results,
     });
@@ -144,24 +204,41 @@ export default class MazeSearch extends Component {
     let searchedGrid = MazeSearcher.getGreedyBestFirstSearchedGrid();
     let results = searchResults;
 
-    results.push(
-      <div
-        style={{
-          marginLeft: "2em",
-          fontWeight: "bold",
-          fontSize: "1.1em",
-          marginBottom: "2em",
-        }}
-      >
-        <div>
-          GREEDY BEST FIRST SEARCH PATH COST: {this.getPathCost(searchedGrid)}
+    let pathCost = this.getPathCost(searchedGrid);
+    let result;
+    if (pathCost !== 0) {
+      result = (
+        <div
+          style={{
+            marginLeft: "2em",
+            fontWeight: "bold",
+            fontSize: "1.1em",
+            marginBottom: "2em",
+          }}
+        >
+          <div>GREEDY BEST FIRST SEARCH PATH COST: {pathCost}</div>
+          <div>
+            GREEDY BEST FIRST SEARCH VISITED CELL COUNT:{" "}
+            {this.getVisitedCount(searchedGrid)}
+          </div>
         </div>
-        <div>
-          GREEDY BEST FIRST SEARCH VISITED CELL COUNT:{" "}
-          {this.getVisitedCount(searchedGrid)}
+      );
+    } else {
+      result = (
+        <div
+          style={{
+            marginLeft: "2em",
+            fontWeight: "bold",
+            fontSize: "1.1em",
+            marginBottom: "2em",
+          }}
+        >
+          <div>NO GBFS SOLUTION</div>
         </div>
-      </div>
-    );
+      );
+    }
+    results.push(result);
+    
     this.setState({
       searchResults: results,
     });

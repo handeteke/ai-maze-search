@@ -24,6 +24,8 @@ export var MazeSearcher = {
     console.log(searchMethod)
     console.log("initial grid")
     console.log(grid)
+    console.log("MazeSearcher.nodeArr");
+    console.log(MazeSearcher.nodeArr);
 
     if (searchMethod === "DFS") {
       MazeSearcher.dfsVisitedNodes = MazeSearcher.depthFirstSearch();
